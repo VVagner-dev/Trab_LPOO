@@ -16,8 +16,10 @@ public class TelaPrincipal extends JFrame {
 
         setTitle("Sistema de Gestão de Manutenção de Equipamentos (LPOO)");
         setSize(500, 350);
+        // Não fecha imediatamente, espera pelo método sairEsalvar
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
+        // GridLayout para alinhar os botões do menu principal de forma organizada
         setLayout(new GridLayout(6, 1, 10, 10));
 
         // Botões para as funcionalidades
@@ -45,8 +47,9 @@ public class TelaPrincipal extends JFrame {
         // false: lista pendentes (com botão de concluir)
         btnListarPendentes.addActionListener(e -> new ListaManutencoes(this, manutencaoServico, false).setVisible(true));
 
-        // Ação de Salvar e Sair
+        // Ação de Salvar e Sair (Leitura e Gravação)
         btnSair.addActionListener(e -> sairEsalvar());
+        // Adiciona um listener para a ação de fechar a janela, garantindo que os dados sejam salvos
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -55,15 +58,20 @@ public class TelaPrincipal extends JFrame {
         });
     }
 
+    /**
+     * Salva todos os dados usando os serviços e encerra a aplicação.
+     */
     private void sairEsalvar() {
-        // Leitura e Gravação: Chamando os métodos de persistência
+        // Chamando os métodos de persistência para salvar nos arquivos CSV
         equipamentoServico.salvar();
         manutencaoServico.salvar();
         JOptionPane.showMessageDialog(this, "Dados salvos com sucesso nos arquivos CSV!", "Salvar", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
 
-    // Ponto de entrada da aplicação
+    /**
+     * Ponto de entrada principal da aplicação.
+     */
     public static void main(String[] args) {
         // Inicialização dos serviços e injeção de dependência
         EquipamentoServico equipamentoServico = new EquipamentoServico();
@@ -73,6 +81,7 @@ public class TelaPrincipal extends JFrame {
         equipamentoServico.carregar();
         manutencaoServico.carregar();
 
+        // Garante que a GUI seja iniciada na thread correta do Swing
         SwingUtilities.invokeLater(() -> new TelaPrincipal(equipamentoServico, manutencaoServico).setVisible(true));
     }
 }

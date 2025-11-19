@@ -4,6 +4,10 @@ import servicos.EquipamentoServico;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Formulário para cadastrar novos Equipamentos, usando GridBagLayout para um
+ * alinhamento limpo (NetBeans-like).
+ */
 public class FormularioEquipamento extends JDialog {
 
     private EquipamentoServico equipamentoServico;
@@ -13,32 +17,59 @@ public class FormularioEquipamento extends JDialog {
         super(parent, "Cadastrar Equipamento", true);
         this.equipamentoServico = equipamentoServico;
 
-        setSize(300, 250);
+        setSize(350, 220);
         setLocationRelativeTo(parent);
-        setLayout(new GridLayout(4, 2, 10, 10));
 
-        // Componentes do formulário
-        add(new JLabel("ID:"));
-        txtId = new JTextField();
-        add(txtId);
+        // GridBagLayout para controle preciso de alinhamento
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10); // Margem entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Nome:"));
-        txtNome = new JTextField();
-        add(txtNome);
+        // --- Campo ID ---
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        add(new JLabel("ID:"), gbc);
 
-        add(new JLabel("Tipo:"));
-        txtTipo = new JTextField();
-        add(txtTipo);
+        gbc.gridx = 1; gbc.gridy = 0;
+        gbc.weightx = 1.0; // Faz o campo de texto esticar
+        txtId = new JTextField(15);
+        add(txtId, gbc);
 
-        JButton btnSalvar = new JButton("Salvar");
-        add(btnSalvar);
+        // --- Campo Nome ---
+        gbc.gridx = 0; gbc.gridy = 1;
+        gbc.weightx = 0;
+        add(new JLabel("Nome:"), gbc);
+
+        gbc.gridx = 1; gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        txtNome = new JTextField(15);
+        add(txtNome, gbc);
+
+        // --- Campo Tipo ---
+        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.weightx = 0;
+        add(new JLabel("Tipo:"), gbc);
+
+        gbc.gridx = 1; gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        txtTipo = new JTextField(15);
+        add(txtTipo, gbc);
+
+        // --- Botão Salvar ---
+        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridwidth = 2; // Ocupa duas colunas
+        gbc.fill = GridBagConstraints.NONE; // Não estica
+        gbc.anchor = GridBagConstraints.CENTER; // Centraliza
+        gbc.insets = new Insets(15, 10, 5, 10); // Margem extra no topo
+        JButton btnSalvar = new JButton("Salvar Equipamento");
+        add(btnSalvar, gbc);
 
         btnSalvar.addActionListener(e -> cadastrarEquipamento());
     }
 
     private void cadastrarEquipamento() {
         try {
-            // 1. Coleta e validação básica
             Integer id = Integer.parseInt(txtId.getText());
             String nome = txtNome.getText();
             String tipo = txtTipo.getText();
@@ -48,17 +79,16 @@ public class FormularioEquipamento extends JDialog {
                 return;
             }
 
-            // 2. Chama o Serviço
+            // Chamada ao Serviço (Tratamento de Exceção ocorre aqui se ID for duplicado)
             equipamentoServico.cadastrar(id, nome, tipo);
 
-            // 3. Feedback e Fechamento
             JOptionPane.showMessageDialog(this, "Equipamento cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (NumberFormatException ex) {
             // Tratamento de exceção
             JOptionPane.showMessageDialog(this, "O ID deve ser um número inteiro válido.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
         } catch (RuntimeException ex) {
-            // Tratamento de exceção: Captura a exceção de ID duplicado do Serviço
+            // Tratamento de exceção: ID duplicado capturado
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro de Cadastro", JOptionPane.ERROR_MESSAGE);
         }
     }

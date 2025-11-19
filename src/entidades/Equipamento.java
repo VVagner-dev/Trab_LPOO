@@ -1,9 +1,12 @@
 package entidades;
 
+/**
+ * Representa um Equipamento que necessita de manutenção.
+ */
 public class Equipamento {
- private Integer id;
- private String nome;
- private String tipo;
+    private Integer id;
+    private String nome;
+    private String tipo;
 
     public Equipamento(Integer id, String nome, String tipo) {
         this.id = id;
@@ -35,12 +38,12 @@ public class Equipamento {
         this.tipo = tipo;
     }
 
+    /**
+     * Retorna uma representação em string do objeto.
+     * Necessário para exibir o Equipamento corretamente no JComboBox da GUI.
+     */
     @Override
     public String toString() {
-        return "Equipamento{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", tipo='" + tipo + '\'' +
-                '}';
+        return id + " - " + nome + " (" + tipo + ")";
     }
 }
