@@ -68,14 +68,6 @@ public abstract class Manutencao {
         this.concluida = concluida;
     }
 
-    public void concluir(){
-
-    }
-
-    public boolean getStatus(){
-        return status
-    }
-
     public abstract double calcularCusto();
 
     @Override
